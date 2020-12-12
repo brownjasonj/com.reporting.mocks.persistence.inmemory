@@ -79,15 +79,32 @@ public class TradePopulationReactive implements ITradePopulationReactive {
         return this.tradePopulationMetaData.getTradeCountForTradeType(tradeType);
     }
 
+//    @Override
+//    public Flux<Trade> getTrades() {
+//        return Flux.fromStream(this.tradePopulationEntryReactiveRepository.findByTradePopulationId(getId()).stream().map(tradePopulationEntry -> tradePopulationEntry.getTrade()));
+//    }
+//
+//    @Override
+//    public Flux<Trade> getTradesByType(TradeType tradeType) {
+//        if (this.tradePopulationMetaData.getTradeCountForTradeType(tradeType) > 0) {
+//            return Flux.fromStream(this.tradePopulationEntryReactiveRepository.findByTradePopulationIdAndTradeType(this.getId(), tradeType).stream().map(tradePopulationEntry -> tradePopulationEntry.getTrade()));
+//        }
+//        else
+//            return null;
+//    }
+
+
     @Override
     public Flux<Trade> getTrades() {
-        return Flux.fromStream(this.tradePopulationEntryReactiveRepository.findByTradePopulationId(getId()).stream().map(tradePopulationEntry -> tradePopulationEntry.getTrade()));
+        return this.tradePopulationEntryReactiveRepository.findByTradePopulationId(this.getId())
+                .map(tpe -> tpe.getTrade());
     }
 
     @Override
     public Flux<Trade> getTradesByType(TradeType tradeType) {
         if (this.tradePopulationMetaData.getTradeCountForTradeType(tradeType) > 0) {
-            return Flux.fromStream(this.tradePopulationEntryReactiveRepository.findByTradePopulationIdAndTradeType(this.getId(), tradeType).stream().map(tradePopulationEntry -> tradePopulationEntry.getTrade()));
+            return this.tradePopulationEntryReactiveRepository.findByTradePopulationIdAndTradeType(this.getId(), tradeType)
+                    .map(tpe -> tpe.getTrade());
         }
         else
             return null;
